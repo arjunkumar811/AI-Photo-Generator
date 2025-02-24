@@ -4,6 +4,8 @@ import { PrismaClient } from "@prisma/client";
 
 const port = process.env.PORT || 8080;
 
+
+console.log(process.env.FAL_KEY);
 const USER_ID = "123";
 
 const app = express();
@@ -110,14 +112,14 @@ app.get("/pack/bulk", async (req: Request, res: Response) => {
 });
 
 app.get("/image/bulk", async (req: Request, res: Response) => {
-  const images = req.query.images as string[];
-  const limit = req.query.limit as string;
-  const offset = req.query.offset as string;
+  const ids = req.query.images as string[];
+  const limit = req.query.limit as string ?? "10";
+  const offset = req.query.offset as string ?? "0";
 
 
   const imagesData = await PrismaClient.outputImages.findMany({
     where: {
-      id: { in: images },
+      id: { in: ids },
       userId: USER_ID,
     },
     skip: parseInt(offset),
@@ -126,6 +128,15 @@ app.get("/image/bulk", async (req: Request, res: Response) => {
 
   res.json({
     images: imagesData,
+  });
+});
+
+
+app.post("/fal-ai/webhook", async (req: Request, res: Response) => {
+  console.log(req.body);
+  
+  res.json({
+    message: "Webhook received",
   });
 });
 
