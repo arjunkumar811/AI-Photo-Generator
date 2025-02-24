@@ -32,6 +32,7 @@ model Model {
   ethnicity       EthnicityEnum
   eyeColor        EyeColorEnum
   bald            Boolean
+  userId          String
   trainingImage   TrainingImages[]
   outputImage     OutputImages[]
   createdAt       DateTime @default(now())
