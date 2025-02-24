@@ -1,6 +1,6 @@
 import express, { type Request, type Response } from "express";
 import { GenerateImage, GenerateImageFromPack, TrainModel } from "common/types";
-import { prismaClient } from "db";
+import { PrismaClient } from "@prisma/client";
 
 const port = process.env.PORT || 8080;
 
@@ -77,13 +77,13 @@ app.post("/pack/generate", async (req: Request, res: Response) => {
     return;
   }
 
-  const prompts = await prismaClient.packPrompts.findMany({
+  const prompts = await PrismaClient.packPrompts.findMany({
     where: {
       packId: parseData.data.packId,
     },
   });
 
-  const images = await prismaClient.outputImages.createManyReturn({
+  const images = await PrismaClient.outputImages.createManyAndReturn({
     data: prompts.map((prompt: { prompt: any; }) => ({
       prompt: prompt.prompt,
       userId: USER_ID,
@@ -101,7 +101,7 @@ app.post("/pack/generate", async (req: Request, res: Response) => {
 
 
 app.get("/pack/bulk", async (req: Request, res: Response) => {
-  const packs = await prismaClient.packs.findMany({})
+  const packs = await PrismaClient.packs.findMany({})
 
   res.json({
     packs,
@@ -115,7 +115,7 @@ app.get("/image/bulk", async (req: Request, res: Response) => {
   const offset = req.query.offset as string;
 
 
-  const imagesData = await prismaClient.outputImages.findMany({
+  const imagesData = await PrismaClient.outputImages.findMany({
     where: {
       id: { in: images },
       userId: USER_ID,

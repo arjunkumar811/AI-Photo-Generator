@@ -1,11 +1,21 @@
 import z from "zod";
 
-export const TrainModol = z.object({
+export const TrainModel = z.object({
   name: z.string(),
-  type: z.enum(["Man", "Woman", "Other"]),
+  type: z.enum(["Man", "Woman", "Others"]),
   age: z.number(),
-  ehinicity: z.enum(["White", "Black", "Asian American", "East Asian", "South East Asian", "South Asian", "Middle Eastern",  "Pacific", "Hispanic"]),
-  eyeColor: z.enum(["Brown", "Blue",  "Hazel", "Gray"]),
+  ethnicity: z.enum([
+    "White",
+    "Black",
+    "Asian_American",
+    "East_Asian",
+    "South_East_Asian",
+    "South_Asian",
+    "Middle_Eastern",
+    "Pacific",
+    "Hispanic",
+  ]),
+  eyeColor: z.enum(["Brown", "Blue", "Hazel", "Gray"]),
   bald: z.boolean(),
   image: z.array(z.string()),
 });
