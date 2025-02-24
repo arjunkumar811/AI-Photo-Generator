@@ -1,8 +1,10 @@
 import express, { type Request, type Response } from "express";
-import { TrainModel } from "common/types";
+import { GenerateImage, TrainModel } from "common/types";
 import { prismaClient } from "db";
 
 const port = process.env.PORT || 8080;
+
+const USER_ID = "123";
 
 const app = express();
 app.use(express.json()); 
@@ -25,6 +27,7 @@ app.post("/ai/training", async (req: Request, res: Response) => {
       ethnicity: parseData.data.ethnicity,
       eyeColor: parseData.data.eyeColor,
       bald: parseData.data.bald,
+      userId: USER_ID,
     },
   });
 
@@ -32,7 +35,36 @@ app.post("/ai/training", async (req: Request, res: Response) => {
     message: "Model trained successfully",
     modelId: data.id,
   });
+
 });
+
+app.post("ai/generate", async (req: Request, res: Response) => {
+  const parseData = GenerateImage.safeParse(req.body);
+
+  if (!parseData.success) {
+    res.status(400).json({
+      error: parseData.error,
+      message: "Invalid data",
+    });
+    return;
+  }
+
+  const data = await prismaClient.outputImages.create({
+    data: {
+      prompt: parseData.data.prompt,
+      userId: USER_ID,
+      modelId: parseData.data.modelId,
+      imageUrl: "",
+    },
+  });
+
+  res.json({
+    message: "Image generated successfully",
+    imageId: data.id,
+  });
+  
+});
+
 
 
 
