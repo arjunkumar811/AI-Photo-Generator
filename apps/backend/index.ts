@@ -100,7 +100,14 @@ app.post("/pack/generate", async (req: Request, res: Response) => {
 });
 
 
+app.get("/pack/bulk", async (req: Request, res: Response) => {
+  const packs = await prismaClient.packs.findMany({})
 
+  res.json({
+    packs
+  });
+
+});
   
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
