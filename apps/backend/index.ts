@@ -104,11 +104,32 @@ app.get("/pack/bulk", async (req: Request, res: Response) => {
   const packs = await prismaClient.packs.findMany({})
 
   res.json({
-    packs
+    packs,
   });
 
 });
-  
+
+app.get("/image/bulk", async (req: Request, res: Response) => {
+  const images = req.query.images as string[];
+  const limit = req.query.limit as string;
+  const offset = req.query.offset as string;
+
+
+  const imagesData = await prismaClient.outputImages.findMany({
+    where: {
+      id: { in: images },
+      userId: USER_ID,
+    },
+    skip: parseInt(offset),
+    take: parseInt(limit),
+  });
+
+  res.json({
+    images: imagesData,
+  });
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
