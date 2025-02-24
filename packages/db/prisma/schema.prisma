@@ -53,6 +53,8 @@ model OutputImages {
   imageUrl        String
   modelId         String
   userId          String
+  prompt          String
+  status          OutputImageStatusEnum   @default(Pending)
   model           Model @relation(fields: [modelId], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -96,4 +98,10 @@ enum EyeColorEnum {
   Blue
   Hazel
   Gray
+}
+
+enum OutputImageStatusEnum {
+  Pending
+  Generated
+  Error
 }
