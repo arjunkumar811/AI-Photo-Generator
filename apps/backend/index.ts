@@ -1,5 +1,5 @@
 import express, { type Request, type Response } from "express";
-import { GenerateImage, TrainModel } from "common/types";
+import { GenerateImage, GenerateImageFromPack, TrainModel } from "common/types";
 import { prismaClient } from "db";
 
 const port = process.env.PORT || 8080;
@@ -62,13 +62,46 @@ app.post("ai/generate", async (req: Request, res: Response) => {
     message: "Image generated successfully",
     imageId: data.id,
   });
+
+});
+
+
+app.post("/pack/generate", async (req: Request, res: Response) => {
+  const parseData = GenerateImageFromPack.safeParse(req.body);
+
+  if (!parseData.success) {
+    res.status(400).json({
+      error: parseData.error,
+      message: "Invalid data",
+    });
+    return;
+  }
+
+  const prompts = await prismaClient.packPrompts.findMany({
+    where: {
+      packId: parseData.data.packId,
+    },
+  });
+
+  const images = await prismaClient.outputImages.createManyReturn({
+    data: prompts.map((prompt: { prompt: any; }) => ({
+      prompt: prompt.prompt,
+      userId: USER_ID,
+      modelId: parseData.data.modelId,
+      imageUrl: "",
+    })),
+  });
+  
+  res.json({
+    images: images.map((image: { id: any; }) => image.id),
+  });
+
   
 });
 
 
 
-
-
+  
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
