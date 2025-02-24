@@ -81,18 +81,18 @@ enum ModelTypeEnum {
 enum EthnicityEnum {
   White
   Black
-  AsianAmerican
-  EastAsian
-  SouthEastAsian
-  SouthAsian
-  MiddleEastern
+  Asian_American    @map("Asian American")
+  East_Asian        @map("East Asian")
+  South_East_Asian  @map("South East Asian")
+  South_Asian       @map("South Asian")
+  Middle_Eastern    @map("Middle Eastern")
   Pacific
   Hispanic
 }
 
 enum EyeColorEnum {
   Brown
-  lue
-  azel
+  Blue
+  Hazel
   Gray
 }
