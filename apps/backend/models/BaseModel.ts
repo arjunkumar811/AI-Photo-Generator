@@ -2,9 +2,9 @@
 export class BaseModel {
     constructor() {}
 
-    private async generateImage(prompt: string, tensorPath: string) {
+    public async generateImage(prompt: string, tensorPath: string) {
     }
 
-    private async trainModel(inputImages: string[], triggerWord: string) {
+    public async trainModel(inputImages: string[], triggerWord: string) {
     }
 }
