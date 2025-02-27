@@ -1,7 +1,7 @@
 import express, { type Request, type Response } from "express";
 import { GenerateImage, GenerateImageFromPack, TrainModel } from "common/types";
 import { PrismaClient } from "@prisma/client";
-import { S3Client, write, s3 } from "bun";
+import { S3Client } from "bun";
 import { FalAIModel } from "./models/FalAIModel";
 
 const port = process.env.PORT || 8080;
@@ -13,6 +13,24 @@ const USER_ID = "123";
 
 const app = express();
 app.use(express.json()); 
+
+
+app.get("/pre-signed-url", async (req: Request, res: Response) => {
+  const url = await s3.presignUrl("putObject", {
+    Bucket: "fal-ai-models",
+    Key: "test.zip",
+    Expires: 60 * 5,
+  });
+
+  res.json({
+    url,
+  });
+});
+
+
+
+
+
 
 app.post("/ai/training", async (req: Request, res: Response) => {
   const parseData = TrainModel.safeParse(req.body);
