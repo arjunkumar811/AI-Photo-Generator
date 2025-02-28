@@ -3,6 +3,7 @@ import { GenerateImage, GenerateImageFromPack, TrainModel } from "common/types";
 import { PrismaClient } from "@prisma/client";
 import { S3Client } from "bun";
 import { FalAIModel } from "./models/FalAIModel";
+import { fal } from "@fal-ai/client";
 
 const port = process.env.PORT || 8080;
 
@@ -133,8 +134,10 @@ app.post("/pack/generate", async (req: Request, res: Response) => {
     },
   });
 
+  let requestIds: { request_id: string }[] = await Promise.all(prompts.map((prompt: { prompt: string }) => falAIModel.generateImage(prompt.prompt, parseData.data.modelId))); 
+
   const images = await PrismaClient.outputImages.createManyAndReturn({
-    data: prompts.map((prompt: { prompt: any; }) => ({
+    data: prompts.map((prompt: { prompt: string }) => ({
       prompt: prompt.prompt,
       userId: USER_ID,
       modelId: parseData.data.modelId,
