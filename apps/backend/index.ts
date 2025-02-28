@@ -16,14 +16,18 @@ app.use(express.json());
 
 
 app.get("/pre-signed-url", async (req: Request, res: Response) => {
-  const url = await s3.presignUrl("putObject", {
-    Bucket: "fal-ai-models",
-    Key: "test.zip",
-    Expires: 60 * 5,
+  const key = `models/${Date.now()}_${Math.random()}.zip`;
+  const url = await S3Client.presign(`models/${Date.now()}_${Math.random()}.zip`, {
+    accessKeyId: process.env.S3_ACCESS_KEY,
+    secretAccessKey: process.env.S3_SECRET_KEY,
+    endpoint: process.env.S3_ENDPOINT,
+    bucket: process.env.S3_BUCKET,
+    expiresIn: 60 * 5,
   });
 
   res.json({
     url,
+    key,
   });
 });
 
